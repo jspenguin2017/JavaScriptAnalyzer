@@ -72,13 +72,13 @@
          * @listens button.onclick
          */
         var unHexFind = function () {
-            //Get input
-            const str = $("#unHexValToIndex").val();
             //Check if there are parsed data
             if (unHexData.length === 0) {
                 $("#unHexOutput").html("<p>You must click Parse button first. </p>");
                 return;
             }
+            //Get input
+            const str = $("#unHexValToIndex").val();
             //Clear output
             $("#unHexOutput").html("");
             //Find element
@@ -94,6 +94,11 @@
          * @listens button.onclick
          */
         var unHexGet = function () {
+            //Check if there are parsed data
+            if (unHexData.length === 0) {
+                $("#unHexOutput").html("<p>You must click Parse button first. </p>");
+                return;
+            }
             //Get index
             let i;
             try {
