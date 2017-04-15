@@ -120,7 +120,7 @@
          * @listens button.onclick
          */
         var unFuck1 = function () {
-            const input = $("#unFuckInput").val();
+            const input = $("#unFuckInput").val().trim().replace(/\s/g, "");
             try {
                 if (input.endsWith("()")) {
                     $("#unFuckOutput").val((/\n(.+)/.exec(eval(input.slice(0, -2)))[1]).toString());
@@ -137,7 +137,7 @@
          * @listens button.onclick
          */
         var unFuck2 = function () {
-            const input = $("#unFuckInput").val();
+            const input = $("#unFuckInput").val().trim().replace(/\s/g, "");
             try {
                 if (input.endsWith("()")) {
                     $("#unFuckOutput").val((/.+(?=\n})/.exec(eval(input.slice(0, -2)))).toString());
