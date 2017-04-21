@@ -98,10 +98,8 @@
                 return;
             }
             //Get index
-            let i;
-            try {
-                i = parseInt($("#unHexIndexToVal").val());
-            } catch (err) {
+            let i = parseInt($("#unHexIndexToVal").val());
+            if (isNaN(i) || !isFinite(i) || i < 0) {
                 $("#unHexOutput").html("<p>That is not a valid index, please enter an integer. </p>");
                 return;
             }
