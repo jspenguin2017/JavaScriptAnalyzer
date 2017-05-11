@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,7 +30,7 @@
         "use strict";
         //=====General=====
         /**
-         * Check if the key that is pressed is Enter key.
+         * Check if the key that is pressed is the Enter key.
          * @function
          * @param {Object} e - The event object.
          * @returns {bool} True if the key that is pressed is Enter key, false otherwise.
@@ -41,12 +41,12 @@
         };
         //=====UnHex=====
         /**
-         * Data for UnHex.
+         * Data storage for UnHex.
          * @var {Array.<string>}
          */
         var unHexData = [];
         /**
-         * Parse data in UnHex textarea and put them into {@link unHexData}.
+         * Parse data in unHex textarea and put it into unHexData.
          * @function
          * @listens button.onclick
          */
@@ -55,33 +55,36 @@
             unHexData = [];
             //Parse input
             try {
+                //Put data into unHexData
                 eval("unHexData = " + $("#unHexTextarea").val());
+                //Also put the parsed data back to the textbox so the user can see it
                 $("#unHexTextarea").val(JSON.stringify(unHexData));
-                $("#unHexOutput").html("<p>Input successfully parsed. </p>");
+                $("#unHexOutput").html("<p>Input successfully parsed.</p>");
             } catch (err) {
-                $("#unHexOutput").html("<p>Could not parse input. </p>");
-                return;
+                //Something went wrong when parsing
+                $("#unHexOutput").html("<p>Could not parse input.</p>");
             }
         };
         /**
-         * Find the index of the element that contains the entered text.
+         * Find the index of the element that contains entered text.
          * @function
          * @listens button.onclick
          */
         var unHexFind = function () {
             //Check if there are parsed data
             if (unHexData.length === 0) {
-                $("#unHexOutput").html("<p>You must click Parse button first. </p>");
-                return;
-            }
-            //Get input
-            const str = $("#unHexValToIndex").val();
-            //Clear output
-            $("#unHexOutput").html("");
-            //Find element
-            for (let i = 0; i < unHexData.length; i++) {
-                if (unHexData[i].includes(str)) {
-                    $("#unHexOutput").append($("<p>").text(i.toString() + ": " + unHexData[i]));
+                //Nothing there
+                $("#unHexOutput").html("<p>You must click Parse button first.</p>");
+            } else {
+                //Data found, get input
+                const str = $("#unHexValToIndex").val();
+                //Clear output
+                $("#unHexOutput").html("");
+                //Find elements and add to output
+                for (let i = 0; i < unHexData.length; i++) {
+                    if (unHexData[i].includes(str)) {
+                        $("#unHexOutput").append($("<p>").text(i.toString() + ": " + unHexData[i]));
+                    }
                 }
             }
         };
@@ -93,18 +96,18 @@
         var unHexGet = function () {
             //Check if there are parsed data
             if (unHexData.length === 0) {
-                $("#unHexOutput").html("<p>You must click Parse button first. </p>");
+                $("#unHexOutput").html("<p>You must click Parse button first.</p>");
                 return;
             }
             //Get index
             let i = parseInt($("#unHexIndexToVal").val());
             if (isNaN(i) || !isFinite(i) || i < 0) {
-                $("#unHexOutput").html("<p>That is not a valid index, please enter an integer. </p>");
+                $("#unHexOutput").html("<p>That is not a valid index, please enter an integer.</p>");
                 return;
             }
             //Check if index is out of range
             if (i >= unHexData.length) {
-                $("#unHexOutput").html("<p>Index out of range. </p>");
+                $("#unHexOutput").html("<p>Index out of range.</p>");
                 return;
             }
             //Show result
@@ -113,30 +116,39 @@
         //=====JS Unfuck=====
         /**
          * Decompile JSFuck code, method 1.
+         * The main logic is from nderscore of Code Golf.
          * @function
          * @listens button.onclick
          */
         var unFuck1 = function () {
+            //Get the value and remove white spaces
             const input = $("#unFuckInput").val().trim().replace(/\s/g, "");
             try {
+                //Check if the whole thing is wrapped in eval()
                 if (input.endsWith("()")) {
+                    //It is, decompile with method 1
                     $("#unFuckOutput").val((/\n(.+)/.exec(eval(input.slice(0, -2)))[1]).toString());
                 } else {
+                    //It is not, decompile directly with eval(), this should not execute the payload
                     $("#unFuckOutput").val(eval(input).toString());
                 }
             } catch (err) {
+                //Something went wrong when decompiling
                 $("#unFuckOutput").val("Failed, please try the other method. Error message: \n" + err);
             }
         };
         /**
          * Decompile JSFuck code, method 2.
+         * The main logic is from nderscore of Code Golf.
          * @function
          * @listens button.onclick
          */
         var unFuck2 = function () {
+            //This function uses similar logic as unFuck1(), detailed comments are available there
             const input = $("#unFuckInput").val().trim().replace(/\s/g, "");
             try {
                 if (input.endsWith("()")) {
+                    //Decompile with method 2
                     $("#unFuckOutput").val((/.+(?=\n})/.exec(eval(input.slice(0, -2)))).toString());
                 } else {
                     $("#unFuckOutput").val(eval(input).toString());
@@ -153,15 +165,16 @@
     <div class="jumbotron">
         <div class="container">
             <h1>JavaScript Decompiler</h1>
-            <p>Warning: This tool is designed for professionals, pasting malicious code can compromise your data. </p>
-            <p>Note: You may need to unblock unsafe content for iframes to properly load. </p>
+            <p>Warning: This tool is designed for professionals, pasting malicious code can compromise your data.</p>
+            <p>Note: You may need to unblock unsafe content for iframes to properly load.</p>
         </div>
     </div>
     <!-- UnHex -->
     <div class="jumbotron">
         <div class="container">
             <h3>UnHex (Warning: eval() is used to parse input)</h3>
-            <p>Please enter the complete array of \x encoded strings, including both square brackets. </p>
+            <p>Please enter the complete array of \x encoded strings, including both square brackets.</p>
+            <p>This can also be a handy tool to search through any array.</p>
             <textarea id="unHexTextarea" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
             <div class="row">
                 <div class="col-lg-3">
@@ -190,9 +203,12 @@
     <!-- JS Unfuck -->
     <div class="jumbotron">
         <div class="container">
-            <h3>JS Unfuck (Warning: eval() is used to decompile JSFuck code) (Credit: nderscore of Code Golf)</h3>
-            <p>Might not work with JSFuck-like code that is not created from http://www.jsfuck.com/ </p>
-            <p>Also might not work if the code evaluates to undefined or other weird things. </p>
+            <h3>
+                JS Unfuck (Warning: eval() is used to decompile JSFuck code)
+                (Credit: <a href="https://codegolf.stackexchange.com/questions/28714/convert-jsfuck-to-normal-js" target="_blank">nderscore of Code Golf</a>)
+            </h3>
+            <p>Might not work with JSFuck-like code that is not created from http://www.jsfuck.com/</p>
+            <p>Also might not work if the code evaluates to undefined or other weird things.</p>
             <textarea id="unFuckInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
             <br /><br />
             <div class="row">
@@ -210,25 +226,25 @@
     <!-- Unminify -->
     <div class="jumbotron">
         <div class="container">
-            <h3>Unminify: http://unminify.com/ </h3>
+            <h3>Unminify: http://unminify.com/</h3>
             <iframe src="http://unminify.com/"></iframe>
         </div>
     </div>
     <!-- JS UnPacker -->
     <div class="jumbotron">
         <div class="container">
-            <h3>JS UnPacker: http://matthewfl.com/unPacker.html </h3>
+            <h3>JS UnPacker: http://matthewfl.com/unPacker.html</h3>
             <iframe src="http://matthewfl.com/unPacker.html"></iframe>
         </div>
     </div>
     <!-- JS Nice -->
     <div class="jumbotron">
         <div class="container">
-            <h3>JS Nice (Deobfuscator): http://jsnice.org/ </h3>
+            <h3>JS Nice (Deobfuscator): http://jsnice.org/</h3>
             <iframe src="http://jsnice.org/"></iframe>
         </div>
     </div>
-    <!-- Source Code -->
+    <!-- Source Code and License -->
     <div class="jumbotron">
         <div class="container">
             <h2>Source Code and License</h2>
