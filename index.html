@@ -44,6 +44,16 @@
          * @const {RegExp}
          */
         var space = /\s/g;
+        /**
+         * Precompiled RegExp for unFuck1().
+         * @const {RegExp}
+         */
+        var reUnFuck1 = /\n(.+)/;
+        /**
+         * Precompiled RegExp for unFuck2().
+         * @const {RegExp}
+         */
+        var reUnFuck2 = /.+(?=\n})/;
         //=====UnHex=====
         /**
          * Data storage for UnHex.
@@ -132,7 +142,7 @@
                 //Check if the whole thing is wrapped in eval()
                 if (input.endsWith("()")) {
                     //It is, decompile with method 1
-                    $("#unFuckOutput").val((/\n(.+)/.exec(eval(input.slice(0, -2)))[1]).toString());
+                    $("#unFuckOutput").val((reUnFuck1.exec(eval(input.slice(0, -2)))[1]).toString());
                 } else {
                     //It is not, decompile directly with eval(), this should not execute the payload
                     $("#unFuckOutput").val(eval(input).toString());
@@ -154,7 +164,7 @@
             try {
                 if (input.endsWith("()")) {
                     //Decompile with method 2
-                    $("#unFuckOutput").val((/.+(?=\n})/.exec(eval(input.slice(0, -2)))).toString());
+                    $("#unFuckOutput").val((reUnFuck2.exec(eval(input.slice(0, -2)))).toString());
                 } else {
                     $("#unFuckOutput").val(eval(input).toString());
                 }
