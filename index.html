@@ -97,9 +97,11 @@
                 $("#unHexOutput").html("");
                 //Find elements and add to output
                 for (let i = 0; i < unHexData.length; i++) {
+                    try {
                     if (unHexData[i].includes(str)) {
                         $("#unHexOutput").append($("<p>").text(i.toString() + ": " + unHexData[i]));
                     }
+                    }catch(err){}
                 }
             }
         };
