@@ -1,6 +1,6 @@
 # JavaScript Decompiler
 
-This is a tool that deobfuscates and decompiles JavaScript. It is designed for professionals. 
+A tool that deobfuscates and decompiles JavaScript
 
 Please open an issue if there is something you want me to know. 
 
