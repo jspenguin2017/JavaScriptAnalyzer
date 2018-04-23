@@ -3,11 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!--<meta name="description" content="" />-->
     <meta name="author" content="jspenguin2017" />
-    <!--<link rel="icon" href="" />-->
     <title>JavaScript Analyzer</title>
-    <!-- CSS -->
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
     <style>
         /* Set width and height of iframe */
@@ -15,6 +13,7 @@
             width: 100%;
             height: 600px;
         }
+
         /* Set width, height, resizing behavior, and font of textarea */
         textarea {
             width: 100%;
@@ -23,12 +22,13 @@
             font-family: Consolas;
         }
     </style>
-    <!-- JS -->
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" charset="utf-8" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script>
         "use strict";
-        //=====General=====
+
+
         /**
          * Check if the key that is pressed is the Enter key.
          * @function
@@ -39,98 +39,96 @@
         var keyCheck = function (e) {
             return e.keyCode === 13;
         };
+
         /**
          * Precompiled RegExp for matching space.
          * @const {RegExp}
          */
         var space = /\s/g;
+
         /**
          * Precompiled RegExp for unFuck1().
          * @const {RegExp}
          */
         var reUnFuck1 = /\n(.+)/;
+
         /**
          * Precompiled RegExp for unFuck2().
          * @const {RegExp}
          */
         var reUnFuck2 = /.+(?=\n})/;
-        //=====UnHex=====
+
+
         /**
          * Data storage for UnHex.
          * @var {Array.<string>}
          */
         var unHexData = [];
+
         /**
          * Parse data in unHex textarea and put it into unHexData.
          * @function
          * @listens button.onclick
          */
         var unHexParse = function () {
-            //Clean old data
             unHexData = [];
-            //Parse input
             try {
-                //Put data into unHexData
                 eval("unHexData = " + $("#unHexTextarea").val());
-                //Also put the parsed data back to the textbox so the user can see it
                 $("#unHexTextarea").val(JSON.stringify(unHexData));
+
                 $("#unHexOutput").html("<p>Input successfully parsed.</p>");
             } catch (err) {
-                //Something went wrong when parsing
                 $("#unHexOutput").html("<p>Could not parse input.</p>");
             }
         };
+
         /**
          * Find the index of the element that contains entered text.
          * @function
          * @listens button.onclick
          */
         var unHexFind = function () {
-            //Check if there are parsed data
             if (unHexData.length === 0) {
-                //Nothing there
                 $("#unHexOutput").html("<p>You must click Parse button first.</p>");
             } else {
-                //Data found, get input
                 const str = $("#unHexValToIndex").val();
-                //Clear output
                 $("#unHexOutput").html("");
-                //Find elements and add to output
+
                 for (let i = 0; i < unHexData.length; i++) {
                     try {
                         if (unHexData[i].includes(str)) {
                             $("#unHexOutput").append($("<p>").text(i.toString() + ": " + unHexData[i]));
                         }
-                    } catch (err) { } //Ignore items that are not string
+                    } catch (err) { } // Ignore items that are not string
                 }
             }
         };
+
         /**
          * Get value of the element at the entered index.
          * @function
          * @listens button.onclick
          */
         var unHexGet = function () {
-            //Check if there are parsed data
             if (unHexData.length === 0) {
                 $("#unHexOutput").html("<p>You must click Parse button first.</p>");
                 return;
             }
-            //Get index
+
             let i = parseInt($("#unHexIndexToVal").val());
             if (isNaN(i) || !isFinite(i) || i < 0) {
                 $("#unHexOutput").html("<p>That is not a valid index, please enter an integer.</p>");
                 return;
             }
-            //Check if index is out of range
             if (i >= unHexData.length) {
                 $("#unHexOutput").html("<p>Index out of range.</p>");
                 return;
             }
-            //Show result
+
             $("#unHexOutput").html($("<p>").text(unHexData[i]));
         };
-        //=====JS Unfuck=====
+
+
         /**
          * Decompile JSFuck code, method 1.
          * The main logic is from nderscore of Code Golf.
@@ -138,22 +136,19 @@
          * @listens button.onclick
          */
         var unFuck1 = function () {
-            //Get the value and remove white spaces
             const input = $("#unFuckInput").val().trim().replace(space, "");
             try {
-                //Check if the whole thing is wrapped in eval()
                 if (input.endsWith("()")) {
-                    //It is, decompile with method 1
+                    // Remove outmost eval() wrapper
                     $("#unFuckOutput").val((reUnFuck1.exec(eval(input.slice(0, -2)))[1]).toString());
                 } else {
-                    //It is not, decompile directly with eval(), this should not execute the payload
                     $("#unFuckOutput").val(eval(input).toString());
                 }
             } catch (err) {
-                //Something went wrong when decompiling
                 $("#unFuckOutput").val("Failed, please try the other method. Error message:\n" + err);
             }
         };
+
         /**
          * Decompile JSFuck code, method 2.
          * The main logic is from nderscore of Code Golf.
@@ -161,11 +156,9 @@
          * @listens button.onclick
          */
         var unFuck2 = function () {
-            //This function uses similar logic as unFuck1(), detailed comments are available there
             const input = $("#unFuckInput").val().trim().replace(space, "");
             try {
                 if (input.endsWith("()")) {
-                    //Decompile with method 2
                     $("#unFuckOutput").val((reUnFuck2.exec(eval(input.slice(0, -2)))).toString());
                 } else {
                     $("#unFuckOutput").val(eval(input).toString());
@@ -178,6 +171,7 @@
 </head>
 <body>
     <div style="height:20px;"></div>
+
     <!-- JavaScript Analyzer -->
     <div class="jumbotron">
         <div class="container">
@@ -186,6 +180,7 @@
             <p>Note: You may need to unblock unsafe content for iframes to load properly.</p>
         </div>
     </div>
+
     <!-- UnHex -->
     <div class="jumbotron">
         <div class="container">
@@ -217,6 +212,7 @@
             <div id="unHexOutput"></div>
         </div>
     </div>
+
     <!-- JS Unfuck -->
     <div class="jumbotron">
         <div class="container">
@@ -240,6 +236,7 @@
             <textarea id="unFuckOutput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         </div>
     </div>
+
     <!-- Unminify -->
     <div class="jumbotron">
         <div class="container">
@@ -247,6 +244,7 @@
             <iframe src="http://unminify.com/"></iframe>
         </div>
     </div>
+
     <!-- JS UnPacker -->
     <div class="jumbotron">
         <div class="container">
@@ -254,6 +252,7 @@
             <iframe src="http://matthewfl.com/unPacker.html"></iframe>
         </div>
     </div>
+
     <!-- JS Nice -->
     <div class="jumbotron">
         <div class="container">
@@ -261,6 +260,7 @@
             <iframe src="http://jsnice.org/"></iframe>
         </div>
     </div>
+
     <!-- Source Code and License -->
     <div class="jumbotron">
         <div class="container">
@@ -268,6 +268,7 @@
             <p><a href="https://github.com/jspenguin2017/JavaScriptAnalyzer" target="_blank">View on GitHub</a></p>
         </div>
     </div>
+
     <!-- Footer -->
     <div class="container theme-showcase">
         <p style="color:gray; font-size:12px;">JavaScript Analyzer by jspenguin2017</p>
